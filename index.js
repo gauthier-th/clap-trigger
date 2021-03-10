@@ -20,6 +20,10 @@ var ClapTrigger = new Class({
     }) [os.type()]
   },
 
+  initialize: function(config) {
+    Object.assign(this.config, config);
+  },
+
   start : function(chain){
     if(this._started)
       return chain("Already running");
