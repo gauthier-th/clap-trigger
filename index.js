@@ -13,6 +13,11 @@ var ClapTrigger = new Class({
     CLAP_AMPLITUDE_THRESHOLD   : 0.7,
     CLAP_ENERGY_THRESHOLD      : 0.3,
     CLAP_MAX_DURATION          : 1.5,
+    AUDIO_SOURCE: ({
+      'Linux'      : 'alsa hw:1,0',
+      'Windows_NT' : 'waveaudio -d',
+      'Darwin'     : 'coreaudio default'
+    }) [os.type()]
   },
 
   start : function(chain){
@@ -77,11 +82,8 @@ var ClapTrigger = new Class({
     if(!this._started)
       return chain("Listener not running");
 
-    var args = ({
-      'Linux'      : ['-t', 'alsa', 'hw:1,0'],
-      'Windows_NT' : ['-t', 'waveaudio', '-d'],
-      'Darwin'     : ['-t', 'coreaudio', 'default']
-    }) [os.type()];
+    var args = this.config.AUDIO_SOURCE.split(' ');
+    args.splice(0, 0, "-t");
 
     args.push("-t",  "wav", "-n");
     args.push("--no-show-progress");
